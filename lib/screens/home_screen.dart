@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_demo_api_app/widgets/date_widet.dart';
+import 'package:flutter_demo_api_app/widgets/log_item_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -15,39 +17,45 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Center(child: const Text("Flutter Demo App")),
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: EdgeInsets.only(left: 4, right: 4, top: 12, bottom: 0),
         child: Column(
           children: [
-            Row(
+          Row(
 
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                    height: 50,
-                    child: Center(child: Text("1.1."))),
-                Container(
-                    height: 50,
-                    child: Center(child: Text("2.1."))),
-                Container(
-                    height: 50,
-                    child: Center(child: Text("3.1."))),
-                Container(
-                    height: 50,
-                    child: Center(child: Text("4.1."))),
-                Container(
-                    height: 50,
-                    child: Center(child: Text("5.1."))),
-              ],
-            ),
-            Expanded(child: ListView(
-              children: [
-                Text("Log 1"),
-                Text("Log 2"),
-                Text("Log 3"),
-                Text("Log 4"),
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            DateWidget(date: "1.1."),
+            DateWidget(date: "2.1."),
+            DateWidget(date: "3.1."),
+            DateWidget(date: "4.1."),
+            DateWidget(date: "5.1."),
+            DateWidget(date: "6.1."),
+            DateWidget(date: "7.1."),
 
-              ],
-            ))
+          ],
+        ),
+        SizedBox(height: 12,),
+        Expanded(child: ListView(
+            children: ListTile.divideTiles(context: context, tiles: [
+              LogItemWidget(logText: "Log 1", logHour: "10:00"),
+              LogItemWidget(logText: "Log 1", logHour: "10:00"),
+              LogItemWidget(logText: "Log 1", logHour: "10:00"),
+              LogItemWidget(logText: "Log 1", logHour: "10:00"),
+              LogItemWidget(logText: "Log 1", logHour: "10:00"),
+              LogItemWidget(logText: "Log 1", logHour: "10:00"),
+              LogItemWidget(logText: "Log 1", logHour: "10:00"),
+              LogItemWidget(logText: "Log 1", logHour: "10:00"),
+              LogItemWidget(logText: "Log 1", logHour: "10:00"),
+              LogItemWidget(logText: "Log 1", logHour: "10:00"),
+              LogItemWidget(logText: "Log 1", logHour: "10:00"),
+              LogItemWidget(logText: "Log 1", logHour: "10:00"),
+              LogItemWidget(logText: "Log 1", logHour: "10:00"),
+              LogItemWidget(logText: "Log 1", logHour: "10:00"),
+              LogItemWidget(logText: "Log 1", logHour: "10:00"),
+              LogItemWidget(logText: "Log 1", logHour: "10:00"),
+              LogItemWidget(logText: "Log 1", logHour: "10:00"),
+            ],
+            ).toList(),)),
           ],
         ),
       ),
