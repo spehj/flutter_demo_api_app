@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_api_app/screens/home_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+
+
+Future<void> main() async{
+  await dotenv.load();
   runApp(const MyApp());
 }
 

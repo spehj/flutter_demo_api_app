@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_demo_api_app/widgets/date_widet.dart';
 import 'package:flutter_demo_api_app/widgets/log_item_widget.dart';
 
+import '../auth/secrets.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -37,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
         SizedBox(height: 12,),
         Expanded(child: ListView(
             children: ListTile.divideTiles(context: context, tiles: [
-              LogItemWidget(logText: "Log 1", logHour: "10:00"),
+              LogItemWidget(logText: "Log 0", logHour: "10:00"),
               LogItemWidget(logText: "Log 1", logHour: "10:00"),
               LogItemWidget(logText: "Log 1", logHour: "10:00"),
               LogItemWidget(logText: "Log 1", logHour: "10:00"),
