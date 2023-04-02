@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_demo_api_app/services/logs_access_token.dart';
 import 'package:flutter_demo_api_app/widgets/date_widet.dart';
 import 'package:flutter_demo_api_app/widgets/log_item_widget.dart';
+import 'package:intl/intl.dart';
 
 import '../auth/secrets.dart';
 import '../models/log.dart';
@@ -34,23 +35,23 @@ class _HomeScreenState extends State<HomeScreen> {
         child:
         Column(
           children: [
-          Row(
+              Row(
 
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: const [
-            DateWidget(date: "1.1."),
-            DateWidget(date: "2.1."),
-            DateWidget(date: "3.1."),
-            DateWidget(date: "4.1."),
-            DateWidget(date: "5.1."),
-            DateWidget(date: "6.1."),
-            DateWidget(date: "7.1."),
+            DateWidget(date: "2.5."),
+            DateWidget(date: "3.5."),
+            DateWidget(date: "4.5."),
+            DateWidget(date: "5.5."),
+            DateWidget(date: "6.5."),
+            DateWidget(date: "7.5."),
+            DateWidget(date: "8.5."),
 
           ],
         ),
         SizedBox(height: 12,),
         Expanded(child: FutureBuilder(
-          future: fetchLogs("2022-01-20T00:00:00Z", "2023-01-27T23:59:59Z"),
+          future: fetchLogs("2022-05-02T00:00:00Z", "2022-05-08T23:59:59Z"),
           builder: (BuildContext context, snapshot){
               switch (snapshot.connectionState){
                 case ConnectionState.waiting:
@@ -62,11 +63,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   }else if (snapshot.hasData){
                     List<Log> logs = snapshot.data as List<Log>;
-                    return ListView.builder(
-                        itemCount: logs.length,
-                        itemBuilder: (BuildContext context, int index){
-                      return LogItemWidget(logText: logs[index].date.toString(), logHour: logs[index].id.toString());
-                    });
+                    Map<String, List<Log>> organizedLogs = {
+                      '1': [], // Monday
+                      '2': [], // Tuesday
+                      '3': [], // Wednesday
+                      '4': [], // Thursday
+                      '5': [], // Friday
+                      '6': [], // Saturday
+                      '7': [], // Sunday
+                    };
+                    var dayIndex = 0; // 1 is Monday
+                    for (var log in logs) {
+                      String dayIndex = log.date.weekday.toString();
+                      organizedLogs[dayIndex]?.add(log);
+                    }
+
+                    print("organized: $organizedLogs");
+                    return LogsView(organizedLogs: organizedLogs);
                   }
                   else{
                     return CircularProgressIndicator();
