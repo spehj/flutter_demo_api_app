@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_demo_api_app/services/logs_access_token.dart';
 import 'package:flutter_demo_api_app/widgets/date_widet.dart';
 import 'package:flutter_demo_api_app/widgets/log_item_widget.dart';
 
 import '../auth/secrets.dart';
+import '../services/logs_api.dart';
+import 'logs_view.dart';
 
 class HomeScreen extends StatefulWidget {
+  // final String accessToken;
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
@@ -12,6 +16,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    fetchLogs("2022-01-20T00:00:00Z", "2023-01-27T23:59:59Z");
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Container(
         padding: EdgeInsets.only(left: 4, right: 4, top: 12, bottom: 0),
-        child: Column(
+        child:
+        Column(
           children: [
           Row(
 
@@ -37,27 +49,28 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         SizedBox(height: 12,),
-        Expanded(child: ListView(
-            children: ListTile.divideTiles(context: context, tiles: [
-              LogItemWidget(logText: "Log 0", logHour: "10:00"),
-              LogItemWidget(logText: "Log 1", logHour: "10:00"),
-              LogItemWidget(logText: "Log 1", logHour: "10:00"),
-              LogItemWidget(logText: "Log 1", logHour: "10:00"),
-              LogItemWidget(logText: "Log 1", logHour: "10:00"),
-              LogItemWidget(logText: "Log 1", logHour: "10:00"),
-              LogItemWidget(logText: "Log 1", logHour: "10:00"),
-              LogItemWidget(logText: "Log 1", logHour: "10:00"),
-              LogItemWidget(logText: "Log 1", logHour: "10:00"),
-              LogItemWidget(logText: "Log 1", logHour: "10:00"),
-              LogItemWidget(logText: "Log 1", logHour: "10:00"),
-              LogItemWidget(logText: "Log 1", logHour: "10:00"),
-              LogItemWidget(logText: "Log 1", logHour: "10:00"),
-              LogItemWidget(logText: "Log 1", logHour: "10:00"),
-              LogItemWidget(logText: "Log 1", logHour: "10:00"),
-              LogItemWidget(logText: "Log 1", logHour: "10:00"),
-              LogItemWidget(logText: "Log 1", logHour: "10:00"),
-            ],
-            ).toList(),)),
+        Expanded(child: LogsView()),
+        // Expanded(child: ListView(
+        //     children: ListTile.divideTiles(context: context, tiles: [
+        //       LogItemWidget(logText: "Log 0", logHour: "10:00"),
+        //       LogItemWidget(logText: "Log 1", logHour: "10:00"),
+        //       LogItemWidget(logText: "Log 1", logHour: "10:00"),
+        //       LogItemWidget(logText: "Log 1", logHour: "10:00"),
+        //       LogItemWidget(logText: "Log 1", logHour: "10:00"),
+        //       LogItemWidget(logText: "Log 1", logHour: "10:00"),
+        //       LogItemWidget(logText: "Log 1", logHour: "10:00"),
+        //       LogItemWidget(logText: "Log 1", logHour: "10:00"),
+        //       LogItemWidget(logText: "Log 1", logHour: "10:00"),
+        //       LogItemWidget(logText: "Log 1", logHour: "10:00"),
+        //       LogItemWidget(logText: "Log 1", logHour: "10:00"),
+        //       LogItemWidget(logText: "Log 1", logHour: "10:00"),
+        //       LogItemWidget(logText: "Log 1", logHour: "10:00"),
+        //       LogItemWidget(logText: "Log 1", logHour: "10:00"),
+        //       LogItemWidget(logText: "Log 1", logHour: "10:00"),
+        //       LogItemWidget(logText: "Log 1", logHour: "10:00"),
+        //       LogItemWidget(logText: "Log 1", logHour: "10:00"),
+        //     ],
+        //     ).toList(),)),
           ],
         ),
       ),
@@ -81,5 +94,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+
+  void fetchLogs(dateFrom, dateTo) async {
+    final response = await LogsApi.fetchLogs(dateFrom, dateTo);
+    print("RESPONSE: $response");
   }
 }

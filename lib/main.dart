@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_api_app/screens/home_screen.dart';
+import 'package:flutter_demo_api_app/services/logs_access_token.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -7,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async{
   await dotenv.load();
+  await initAccessToken();
   runApp(const MyApp());
 }
 
@@ -29,4 +31,6 @@ class MyApp extends StatelessWidget {
 
     );
   }
+
+
 }

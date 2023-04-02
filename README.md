@@ -14,3 +14,15 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+# Setup/build instructions
+1. Clone this repository.
+2. In home directory of this project create a .env file like (change your-* with your credentials):
+~~~
+GRANT_TYPE=your-grant-type
+EMAIL=your-email
+PASSWORD=your-password
+CLIENT_ID=your-clientlid
+~~
+3. Run app
+
