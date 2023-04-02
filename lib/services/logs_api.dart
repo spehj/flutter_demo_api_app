@@ -9,7 +9,7 @@ import 'logs_access_token.dart';
 
 class LogsApi {
   // static Future<List<Log>> fetchLogs() async
-  static Future<List> fetchLogs(String dateFrom, String dateTo) async {
+  static Future<List<Log>> fetchLogs(String dateFrom, String dateTo) async {
     const storage = FlutterSecureStorage();
     String accessToken = await getAccessTokenFromMemory(storage);
     final url =
