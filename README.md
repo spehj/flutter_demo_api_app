@@ -12,7 +12,7 @@ A simple Flutter demo app for fetching data from the api to display logs on sele
 - [x] Arrows to move 1 week forward or backward. Each move makes a new request for Logs of new week.
 - [x] Option to choose year for fetching Logs.
 - [x] Home button which moves screen to first day of first week of 2020.
-
+- [ ] Dynamic widget size using MediaQuery (not implemented yet).
 # Setup/build instructions
 Follow these steps to build the app:
 
