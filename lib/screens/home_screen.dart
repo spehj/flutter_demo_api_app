@@ -18,12 +18,17 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Log> logs = [];
+  int dayIndex = 0;
+  int currentDay = 0;
+  bool isCurrent = false;
+  final PageController _pageController = PageController(initialPage: 0);
+
   @override
   void initState() {
     super.initState();
     // fetchLogs("2022-01-20T00:00:00Z", "2023-01-27T23:59:59Z");
-
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,62 +37,80 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Container(
         padding: EdgeInsets.only(left: 4, right: 4, top: 12, bottom: 0),
-        child:
-        Column(
+        child: Column(
           children: [
-              Row(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                for (var i = 0; i < 7; i++)
+                  GestureDetector(
+                      onTap: () {
+                        dayIndex = i;
+                        print("Day index: $dayIndex}");
+                        _pageController.animateToPage(
+                          dayIndex,
+                          duration: Duration(milliseconds: 500),
+                          curve: Curves.ease,
+                        );
+                        currentDay = dayIndex;
 
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            DateWidget(date: "2.5."),
-            DateWidget(date: "3.5."),
-            DateWidget(date: "4.5."),
-            DateWidget(date: "5.5."),
-            DateWidget(date: "6.5."),
-            DateWidget(date: "7.5."),
-            DateWidget(date: "8.5."),
+                        // if (i==dayIndex){
+                        //   isCurrent = true;
+                        // }
 
+                      },
+                      child: DateWidget(date: "${i + 2}.5.", isSelected: i == currentDay))
+              ],
+            ),
+            SizedBox(
+              height: 12,
+            ),
+            Expanded(
+              child: FutureBuilder(
+                future:
+                    fetchLogs("2022-05-02T00:00:00Z", "2022-05-08T23:59:59Z"),
+                builder: (BuildContext context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    case ConnectionState.done:
+                    default:
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: Text("Error: ${snapshot.error}"),
+                        );
+                      } else if (snapshot.hasData) {
+                        List<Log> logs = snapshot.data as List<Log>;
+                        Map<String, List<Log>> organizedLogs = {
+                          '1': [], // Monday
+                          '2': [], // Tuesday
+                          '3': [], // Wednesday
+                          '4': [], // Thursday
+                          '5': [], // Friday
+                          '6': [], // Saturday
+                          '7': [], // Sunday
+                        };
+                        for (var log in logs) {
+                          String dayIndex = log.date.weekday.toString();
+                          organizedLogs[dayIndex]?.add(log);
+                        }
+
+                        // print("organized: $organizedLogs");
+                        return LogsView(
+                          organizedLogs: organizedLogs,
+                          pageController: _pageController,
+                          newDayIndex: _updateDayIndex,
+                        );
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                  }
+                },
+              ),
+            )
           ],
-        ),
-        SizedBox(height: 12,),
-        Expanded(child: FutureBuilder(
-          future: fetchLogs("2022-05-02T00:00:00Z", "2022-05-08T23:59:59Z"),
-          builder: (BuildContext context, snapshot){
-              switch (snapshot.connectionState){
-                case ConnectionState.waiting:
-                  return Center(child: CircularProgressIndicator(),);
-                case ConnectionState.done:
-                default:
-                  if (snapshot.hasError){
-                    return Center(child: Text("Error: ${snapshot.error}"),);
-
-                  }else if (snapshot.hasData){
-                    List<Log> logs = snapshot.data as List<Log>;
-                    Map<String, List<Log>> organizedLogs = {
-                      '1': [], // Monday
-                      '2': [], // Tuesday
-                      '3': [], // Wednesday
-                      '4': [], // Thursday
-                      '5': [], // Friday
-                      '6': [], // Saturday
-                      '7': [], // Sunday
-                    };
-                    var dayIndex = 0; // 1 is Monday
-                    for (var log in logs) {
-                      String dayIndex = log.date.weekday.toString();
-                      organizedLogs[dayIndex]?.add(log);
-                    }
-
-                    print("organized: $organizedLogs");
-                    return LogsView(organizedLogs: organizedLogs);
-                  }
-                  else{
-                    return CircularProgressIndicator();
-                  }
-              }
-          },
-        ),
-        )],
         ),
       ),
       bottomNavigationBar: Container(
@@ -112,21 +135,19 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _updateDayIndex(int newDayIndex){
+    setState(() {
+      print("NEW index: $newDayIndex");
+      dayIndex = newDayIndex;
+    });
+  }
+
   Future<List<Log>> fetchLogs(dateFrom, dateTo) async {
     final response = await LogsApi.fetchLogs(dateFrom, dateTo);
-    print("RESPONSE: $response");
+    // print("RESPONSE: $response");
     // setState(() {
     //   logs = response;
     // });
     return Future.value(response);
   }
-
-
-  // void fetchLogs(dateFrom, dateTo) async {
-  //   final response = await LogsApi.fetchLogs(dateFrom, dateTo);
-  //   print("RESPONSE: $response");
-  //   setState(() {
-  //     logs = response;
-  //   });
-  // }
 }
