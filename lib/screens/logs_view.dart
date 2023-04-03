@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../models/log.dart';
+import '../providers/date_provider.dart';
 import '../widgets/log_item_widget.dart';
 
 class LogsView extends StatefulWidget {
   final Map<String, List<Log>> organizedLogs;
   final PageController pageController;
-  final Function(int) newDayIndex;
 
-  const LogsView({super.key, required this.organizedLogs, required this.pageController, required this.newDayIndex});
+
+  const LogsView({super.key, required this.organizedLogs, required this.pageController});
 
   @override
   State<LogsView> createState() => _LogsViewState();
@@ -17,26 +19,15 @@ class LogsView extends StatefulWidget {
 
 class _LogsViewState extends State<LogsView> {
   final List<int> _days = [1, 2, 3, 4, 5, 6, 7];
-  // late PageController _pageController;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // _pageController = PageController(initialPage: 0);
+  void onPageChanged(int index){
+    Provider.of<SelectedDateProvider>(context, listen: false).updateSelectedDateProvider(index);
   }
-
-  // void onPageChanged(int index){
-  //   // setState(() {
-  //   //
-  //   // });
-  //   widget.newDayIndex(index);
-  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView.builder(
-        // onPageChanged: onPageChanged,
+        onPageChanged: onPageChanged,
         controller: widget.pageController,// _pageController,
         itemCount: _days.length,
         itemBuilder: (BuildContext context, int index) {

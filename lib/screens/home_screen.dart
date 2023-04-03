@@ -3,9 +3,11 @@ import 'package:flutter_demo_api_app/services/logs_access_token.dart';
 import 'package:flutter_demo_api_app/widgets/date_widet.dart';
 import 'package:flutter_demo_api_app/widgets/log_item_widget.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../auth/secrets.dart';
 import '../models/log.dart';
+import '../providers/date_provider.dart';
 import '../services/logs_api.dart';
 import 'logs_view.dart';
 
@@ -19,7 +21,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<Log> logs = [];
   int dayIndex = 0;
-  int currentDay = 0;
   bool isCurrent = false;
   final PageController _pageController = PageController(initialPage: 0);
 
@@ -52,14 +53,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           duration: Duration(milliseconds: 500),
                           curve: Curves.ease,
                         );
-                        currentDay = dayIndex;
-
-                        // if (i==dayIndex){
-                        //   isCurrent = true;
-                        // }
+                        Provider.of<SelectedDateProvider>(context, listen: false).updateSelectedDateProvider(dayIndex);
 
                       },
-                      child: DateWidget(date: "${i + 2}.5.", isSelected: i == currentDay))
+                      child: DateWidget(date: "${i + 2}.5.", widgetIndex: i, currentDateIndex: dayIndex,))
               ],
             ),
             SizedBox(
@@ -101,7 +98,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         return LogsView(
                           organizedLogs: organizedLogs,
                           pageController: _pageController,
-                          newDayIndex: _updateDayIndex,
                         );
                       } else {
                         return CircularProgressIndicator();
