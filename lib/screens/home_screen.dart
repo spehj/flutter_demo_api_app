@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_api_app/services/logs_access_token.dart';
+import 'package:flutter_demo_api_app/utils/weeks.dart';
 import 'package:flutter_demo_api_app/widgets/date_widet.dart';
 import 'package:flutter_demo_api_app/widgets/log_item_widget.dart';
 import 'package:intl/intl.dart';
@@ -19,19 +20,33 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+
   List<Log> logs = [];
   int dayIndex = 0;
   bool isCurrent = false;
   final PageController _pageController = PageController(initialPage: 0);
+  int currentWeekIndex = 1;
+  late Weeks weeks = Weeks(year: _selectedValue);
+  List<DateTime>? currentWeekList = [];
+  static const List<int> yearsList = <int>[2020, 2021, 2022, 2023];
+  int _selectedValue = yearsList.first;
+
+  // _HomeScreenState(){
+  //   _selectedValue = yearsList[0];
+  //   weeks =
+  // }
 
   @override
   void initState() {
     super.initState();
     // fetchLogs("2022-01-20T00:00:00Z", "2023-01-27T23:59:59Z");
+    currentWeekList = weeks.weeks[currentWeekIndex];
   }
 
   @override
   Widget build(BuildContext context) {
+    // print("WEEKS: ${weeks.weeks[currentWeekIndex]}");
     return Scaffold(
       appBar: AppBar(
         title: Center(child: const Text("Flutter Demo App")),
@@ -53,10 +68,81 @@ class _HomeScreenState extends State<HomeScreen> {
                           duration: Duration(milliseconds: 500),
                           curve: Curves.ease,
                         );
-                        Provider.of<SelectedDateProvider>(context, listen: false).updateSelectedDateProvider(dayIndex);
-
+                        Provider.of<SelectedDateProvider>(context,
+                                listen: false)
+                            .updateSelectedDateProvider(dayIndex);
                       },
-                      child: DateWidget(date: "${i + 2}.5.", widgetIndex: i, currentDateIndex: dayIndex,))
+                      child: DateWidget(
+                        date:
+                            "${currentWeekList![i].toString().substring(5, 10).replaceRange(2, 3, ".")}",
+                        widgetIndex: i,
+                        currentDateIndex: dayIndex,
+                      ))
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                    onTap: () {
+                      // One week back
+                      if (currentWeekIndex >= 2) {
+                        setState(() {
+                          currentWeekIndex -= 1;
+                          currentWeekList = weeks.weeks[currentWeekIndex];
+                          dayIndex = 0;
+                          Provider.of<SelectedDateProvider>(context, listen: false)
+                              .updateSelectedDateProvider(dayIndex);
+                        });
+                      }
+                    },
+                    child: Visibility(
+                      visible: currentWeekIndex >=2,
+                      child: const Icon(
+                        Icons.arrow_back,
+                        size: 30,
+                      ),
+                    )),
+
+                /// Choose year dropdown
+                DropdownButton(
+                    value: _selectedValue,
+                    items: yearsList.map(
+                    (e)=>DropdownMenuItem(value:e,child: Text(e.toString()),)
+
+                ).toList(), onChanged: (value){
+                      setState(() {
+                        dayIndex = 0;
+                        _selectedValue = value!;
+                        weeks = Weeks(year: _selectedValue);
+                        currentWeekList = weeks.weeks[currentWeekIndex];
+                        Provider.of<SelectedDateProvider>(context, listen: false)
+                            .updateSelectedDateProvider(dayIndex);
+                      });
+                }),
+                GestureDetector(
+                    onTap: () {
+                      // One week forward
+                      if (currentWeekIndex < weeks.weeks.length) {
+                        setState(() {
+                          currentWeekIndex += 1;
+                          currentWeekList = weeks.weeks[currentWeekIndex];
+                          dayIndex = 0;
+                          Provider.of<SelectedDateProvider>(context, listen: false)
+                              .updateSelectedDateProvider(dayIndex);
+                        });
+                      }
+                    },
+                    child: Visibility(
+                      visible:  currentWeekIndex < weeks.weeks.length,
+                      child: Icon(
+                        Icons.arrow_forward,
+                        size: 30,
+                      ),
+                    )),
               ],
             ),
             SizedBox(
@@ -64,8 +150,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Expanded(
               child: FutureBuilder(
-                future:
-                    fetchLogs("2022-05-02T00:00:00Z", "2022-05-08T23:59:59Z"),
+                future: fetchLogs(currentWeekList!.first.toString(),
+                    currentWeekList!.last.toString()),
+                // fetchLogs("2022-05-02T00:00:00Z", "2022-05-08T23:59:59Z"),
                 builder: (BuildContext context, snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
@@ -114,11 +201,19 @@ class _HomeScreenState extends State<HomeScreen> {
         color: Colors.black12,
         child: InkWell(
           onTap: () {
-                print("Home Tapped");
-                setState(() {
-                  dayIndex = 0;
-                  Provider.of<SelectedDateProvider>(context, listen: false).updateSelectedDateProvider(dayIndex);
-                });
+            print("Home Tapped");
+            // Test
+            // Weeks weeks = Weeks(year: 2022);
+            // print("WEEKS: ${weeks.weeks.length}");
+            setState(() {
+              dayIndex = 0;
+              _selectedValue = yearsList.first;
+              weeks = Weeks(year: _selectedValue);
+              currentWeekIndex = 1;
+              currentWeekList = weeks.weeks[currentWeekIndex];
+              Provider.of<SelectedDateProvider>(context, listen: false)
+                  .updateSelectedDateProvider(dayIndex);
+            });
           },
           child: Padding(
             padding: EdgeInsets.only(top: 8.0),
@@ -137,8 +232,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
   Future<List<Log>> fetchLogs(dateFrom, dateTo) async {
+    dateTo = dateTo.replaceRange(11, 23, "23:59:59Z");
     final response = await LogsApi.fetchLogs(dateFrom, dateTo);
     return Future.value(response);
   }
