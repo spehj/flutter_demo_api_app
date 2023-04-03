@@ -29,6 +29,7 @@ CLIENT_ID=your-secret-data
 3. Build and run the app.
 
 ## How it looks
+<img src="https://user-images.githubusercontent.com/62114221/229529968-7ea9e2db-c07f-4c24-a3a5-4e9fdfd468f0.png" width=30%>
 
 
 
