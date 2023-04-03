@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_demo_api_app/services/logs_access_token.dart';
 import 'package:flutter_demo_api_app/utils/weeks.dart';
 import 'package:flutter_demo_api_app/widgets/date_widet.dart';
-import 'package:flutter_demo_api_app/widgets/log_item_widget.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../auth/secrets.dart';
 import '../models/log.dart';
 import '../providers/date_provider.dart';
 import '../services/logs_api.dart';
@@ -20,52 +16,57 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-
+  // List of logs to display for one week
   List<Log> logs = [];
   int dayIndex = 0;
-  bool isCurrent = false;
+
+  // Page controller for PageView
   final PageController _pageController = PageController(initialPage: 0);
-  int currentWeekIndex = 1;
-  late Weeks weeks = Weeks(year: _selectedValue);
-  List<DateTime>? currentWeekList = [];
+
+  // List of years for drowpdown menu
   static const List<int> yearsList = <int>[2020, 2021, 2022, 2023];
+
+  // Get initial selected value for dropdown list
   int _selectedValue = yearsList.first;
 
-  // _HomeScreenState(){
-  //   _selectedValue = yearsList[0];
-  //   weeks =
-  // }
+  // Current week index start with 1, because of map with 1 as the week 1
+  int currentWeekIndex = 1;
+
+  // Get all weeks for this year
+  late Weeks weeks = Weeks(year: _selectedValue);
+
+  // List to store this week dates
+  List<DateTime>? currentWeekList = [];
 
   @override
   void initState() {
     super.initState();
-    // fetchLogs("2022-01-20T00:00:00Z", "2023-01-27T23:59:59Z");
+    // Initialize list of dates for this week
     currentWeekList = weeks.weeks[currentWeekIndex];
   }
 
   @override
   Widget build(BuildContext context) {
-    // print("WEEKS: ${weeks.weeks[currentWeekIndex]}");
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: const Text("Flutter Demo App")),
+        title: const Center(child: Text("Flutter Demo App")),
       ),
       body: Container(
-        padding: EdgeInsets.only(left: 4, right: 4, top: 12, bottom: 0),
+        padding: const EdgeInsets.only(left: 4, right: 4, top: 12, bottom: 0),
         child: Column(
           children: [
+            /// ROW WITH DATES
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // Create 7 dates
                 for (var i = 0; i < 7; i++)
                   GestureDetector(
                       onTap: () {
                         dayIndex = i;
-                        print("Day index: $dayIndex}");
                         _pageController.animateToPage(
                           dayIndex,
-                          duration: Duration(milliseconds: 500),
+                          duration: const Duration(milliseconds: 500),
                           curve: Curves.ease,
                         );
                         Provider.of<SelectedDateProvider>(context,
@@ -73,19 +74,24 @@ class _HomeScreenState extends State<HomeScreen> {
                             .updateSelectedDateProvider(dayIndex);
                       },
                       child: DateWidget(
-                        date:
-                            "${currentWeekList![i].toString().substring(5, 10).replaceRange(2, 3, ".")}",
+                        date: currentWeekList![i]
+                            .toString()
+                            .substring(5, 10)
+                            .replaceRange(2, 3, "."),
                         widgetIndex: i,
                         currentDateIndex: dayIndex,
-                      ))
+                      )),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
+
+            /// CONTRLS FOR MOVING BETWEEN WEEKS/YEARS
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // Move one week backwards
                 GestureDetector(
                     onTap: () {
                       // One week back
@@ -94,35 +100,41 @@ class _HomeScreenState extends State<HomeScreen> {
                           currentWeekIndex -= 1;
                           currentWeekList = weeks.weeks[currentWeekIndex];
                           dayIndex = 0;
-                          Provider.of<SelectedDateProvider>(context, listen: false)
+                          Provider.of<SelectedDateProvider>(context,
+                                  listen: false)
                               .updateSelectedDateProvider(dayIndex);
                         });
                       }
                     },
                     child: Visibility(
-                      visible: currentWeekIndex >=2,
+                      visible: currentWeekIndex >= 2,
                       child: const Icon(
                         Icons.arrow_back,
                         size: 30,
                       ),
                     )),
 
-                /// Choose year dropdown
+                // Choose year dropdown
                 DropdownButton(
                     value: _selectedValue,
-                    items: yearsList.map(
-                    (e)=>DropdownMenuItem(value:e,child: Text(e.toString()),)
-
-                ).toList(), onChanged: (value){
+                    items: yearsList
+                        .map((e) => DropdownMenuItem(
+                              value: e,
+                              child: Text(e.toString()),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
                       setState(() {
                         dayIndex = 0;
                         _selectedValue = value!;
                         weeks = Weeks(year: _selectedValue);
                         currentWeekList = weeks.weeks[currentWeekIndex];
-                        Provider.of<SelectedDateProvider>(context, listen: false)
+                        Provider.of<SelectedDateProvider>(context,
+                                listen: false)
                             .updateSelectedDateProvider(dayIndex);
                       });
-                }),
+                    }),
+                // Move one week forwards
                 GestureDetector(
                     onTap: () {
                       // One week forward
@@ -131,32 +143,34 @@ class _HomeScreenState extends State<HomeScreen> {
                           currentWeekIndex += 1;
                           currentWeekList = weeks.weeks[currentWeekIndex];
                           dayIndex = 0;
-                          Provider.of<SelectedDateProvider>(context, listen: false)
+                          Provider.of<SelectedDateProvider>(context,
+                                  listen: false)
                               .updateSelectedDateProvider(dayIndex);
                         });
                       }
                     },
                     child: Visibility(
-                      visible:  currentWeekIndex < weeks.weeks.length,
-                      child: Icon(
+                      visible: currentWeekIndex < weeks.weeks.length,
+                      child: const Icon(
                         Icons.arrow_forward,
                         size: 30,
                       ),
                     )),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 12,
             ),
+
+            /// LIST OF LOGS
             Expanded(
               child: FutureBuilder(
                 future: fetchLogs(currentWeekList!.first.toString(),
                     currentWeekList!.last.toString()),
-                // fetchLogs("2022-05-02T00:00:00Z", "2022-05-08T23:59:59Z"),
                 builder: (BuildContext context, snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
                     case ConnectionState.done:
@@ -176,18 +190,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           '6': [], // Saturday
                           '7': [], // Sunday
                         };
+                        // Add Log to it's day in week
                         for (var log in logs) {
                           String dayIndex = log.date.weekday.toString();
                           organizedLogs[dayIndex]?.add(log);
                         }
-
-                        // print("organized: $organizedLogs");
+                        // Display logs in PageView
                         return LogsView(
                           organizedLogs: organizedLogs,
                           pageController: _pageController,
                         );
                       } else {
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       }
                   }
                 },
@@ -196,15 +210,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+
+      /// HOME BUTTON
       bottomNavigationBar: Container(
         height: 60,
         color: Colors.black12,
         child: InkWell(
           onTap: () {
-            print("Home Tapped");
-            // Test
-            // Weeks weeks = Weeks(year: 2022);
-            // print("WEEKS: ${weeks.weeks.length}");
             setState(() {
               dayIndex = 0;
               _selectedValue = yearsList.first;
@@ -216,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
             });
           },
           child: Padding(
-            padding: EdgeInsets.only(top: 8.0),
+            padding: const EdgeInsets.only(top: 8.0),
             child: Column(
               children: const [
                 Icon(
@@ -233,6 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<List<Log>> fetchLogs(dateFrom, dateTo) async {
+    /// Fetch LOGS from server
     dateTo = dateTo.replaceRange(11, 23, "23:59:59Z");
     final response = await LogsApi.fetchLogs(dateFrom, dateTo);
     return Future.value(response);

@@ -1,7 +1,5 @@
 // Time class
-class Time
-{
-
+class Time {
   final int id;
   final int duration;
   final DateTime? startTime;
@@ -16,7 +14,9 @@ class Time
     required this.running,
   });
 
-  factory Time.fromJson(Map<String, dynamic>json){
-    return Time(id: json['id'], duration: json['duration'], running: json['running']);
+  factory Time.fromJson(Map<String, dynamic> json) {
+    /// Factory constructor to create Time object from JSON
+    return Time(
+        id: json['id'], duration: json['duration'], running: json['running']);
   }
 }

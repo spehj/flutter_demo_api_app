@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 
 class SelectedDateProvider extends ChangeNotifier{
+  /// Provider object to store value of selected day
+  /// to update dates row. Active date has different color.
   int? selectedDateIndex = 0;
   int? get index=>selectedDateIndex;
 
   void updateSelectedDateProvider(int newDateIndex){
+    // Method to update selectedDateIndex value
     selectedDateIndex = newDateIndex;
-    // print("NEW PROVIDER: $selectedDateIndex");
+    // Notify all listeners for changes
     notifyListeners();
   }
 }

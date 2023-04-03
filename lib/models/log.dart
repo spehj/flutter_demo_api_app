@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_demo_api_app/models/time.dart';
 
 // Log class
@@ -78,6 +77,7 @@ class Log {
   });
 
   factory Log.fromJson(Map<String, dynamic> json) {
+    /// Factory constructor to create a Log object from JSON
     return Log(
       note: json['note'].toString(),
       date: DateTime.parse(json['date']),
@@ -92,9 +92,8 @@ class Log {
       customField2: json['customField2'].toString(),
       customField3: json['customField3'].toString(),
       running: json['running'],
-      startTime: json['startTime'] != null
-          ? DateTime.parse(json['startTime'])
-          : null,
+      startTime:
+          json['startTime'] != null ? DateTime.parse(json['startTime']) : null,
       endTime: json['endTime'] != null ? DateTime.parse(json['endTime']) : null,
       times: List<Time>.from(json['times'].map((time) => Time.fromJson(time))),
       status: json['status'],
@@ -116,11 +115,6 @@ class Log {
       attachments: json['attachments'],
       billableAmount: json['billableAmount'],
       id: json['id'],
-
     );
   }
-
 }
-
-
-
