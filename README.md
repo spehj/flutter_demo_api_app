@@ -1,28 +1,35 @@
-# flutter_demo_api_app
+# Flutter Demo API App
+A simple Flutter demo app for fetching data from the api to display logs on selected dates.
 
-A simple Flutter app with API calls
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Features
+- [x] One screen
+- [x] Three data types: Row with dates of one week, ListView with logs of selected date, Navigation bar "Home"
+- [x] Fetch access token from server using auth secrets from .env file.
+- [x] Saves token in SecureStorage.
+- [x] Fetch logs from api for each chosen week.
+- [x] Page view with logs for selected dates with swipe left/right functionality.
+- [x] Option to select date by tapping on a date in top Row.
+- [x] Arrows to move 1 week forward or backward. Each move makes a new request for Logs of new week.
+- [x] Option to choose year for fetching Logs.
+- [x] Home button which moves screen to first day of first week of 2020.
 
 # Setup/build instructions
+Follow these steps to build the app:
+
 1. Clone this repository.
-2. In home directory of this project create a .env file like (change your-* with your credentials):
+2. In home directory of this project create a .env file.
+3. Copy this text and change __your-secret-data__ with your credentials:
 ~~~
-GRANT_TYPE=your-grant-type
-EMAIL=your-email
-PASSWORD=your-password
-CLIENT_ID=your-clientlid
-~~
-3. Run app
+GRANT_TYPE=your-secret-data
+EMAIL=your-secret-data
+PASSWORD=your-secret-data
+CLIENT_ID=your-secret-data
+~~~
+
+3. Build and run the app.
+
+## How it looks
+
+
+
 
