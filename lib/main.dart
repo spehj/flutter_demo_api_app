@@ -6,16 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
-// Future<void> main() async {
-//   await dotenv.load();
-//   await initAccessToken();
-//   runApp(
-//     MultiProvider(
-//         providers: [Provider(create: (_) => SelectedDateProvider())],
-//         child: const MyApp()),
-//   );
-// }
-
 Future<void> main() async {
   await dotenv.load();
   await initAccessToken();
