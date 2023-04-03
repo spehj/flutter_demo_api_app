@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class LogItemWidget extends StatelessWidget {
@@ -8,6 +10,6 @@ class LogItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(title: Text(logText), trailing: Text(logHour),);
+    return ListTile(title: Text(logHour), trailing: Text("ID: $logText"),);
   }
 }

@@ -7,7 +7,7 @@ class SelectedDateProvider extends ChangeNotifier{
 
   void updateSelectedDateProvider(int newDateIndex){
     selectedDateIndex = newDateIndex;
-    print("NEW PROVIDER: $selectedDateIndex");
+    // print("NEW PROVIDER: $selectedDateIndex");
     notifyListeners();
   }
 }

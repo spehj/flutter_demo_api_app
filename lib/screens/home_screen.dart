@@ -113,7 +113,13 @@ class _HomeScreenState extends State<HomeScreen> {
         height: 60,
         color: Colors.black12,
         child: InkWell(
-          onTap: () => print("Home Tapped"),
+          onTap: () {
+                print("Home Tapped");
+                setState(() {
+                  dayIndex = 0;
+                  Provider.of<SelectedDateProvider>(context, listen: false).updateSelectedDateProvider(dayIndex);
+                });
+          },
           child: Padding(
             padding: EdgeInsets.only(top: 8.0),
             child: Column(
@@ -131,19 +137,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _updateDayIndex(int newDayIndex){
-    setState(() {
-      print("NEW index: $newDayIndex");
-      dayIndex = newDayIndex;
-    });
-  }
 
   Future<List<Log>> fetchLogs(dateFrom, dateTo) async {
     final response = await LogsApi.fetchLogs(dateFrom, dateTo);
-    // print("RESPONSE: $response");
-    // setState(() {
-    //   logs = response;
-    // });
     return Future.value(response);
   }
 }

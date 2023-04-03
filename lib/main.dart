@@ -30,6 +30,9 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider<SelectedDateProvider>(
       create: (_)=>SelectedDateProvider(),
       child: MaterialApp(
+        // routes: {
+        //   '/' : (context) => const HomeScreen(),
+        // },
         debugShowCheckedModeBanner: false,
         title: 'Flutter API Demo',
         theme: ThemeData(

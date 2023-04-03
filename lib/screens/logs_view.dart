@@ -35,12 +35,13 @@ class _LogsViewState extends State<LogsView> {
           final logs = widget.organizedLogs[day] ?? [];
 
           return logs.isNotEmpty
-              ? ListView.builder(
+              ? ListView.separated(
             itemCount: logs.length,
             itemBuilder: (BuildContext context, int index) {
               final log = logs[index];
               return LogItemWidget(logText: log.id.toString(), logHour: log.date.toString());
             },
+            separatorBuilder: (BuildContext context, int index) => const Divider(color: Colors.black12),
           )
               : Center(
             child: Text('No logs for this day'),

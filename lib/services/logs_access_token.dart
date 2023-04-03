@@ -9,7 +9,7 @@ Future<String> initAccessToken() async {
     String accessToken = await getAccessTokenFromMemory(storage);
 
     if (accessToken != '') {
-      print("Got access token from memory: $accessToken");
+      // print("Got access token from memory: $accessToken");
       return accessToken;
     }
   } catch (e) {
@@ -17,7 +17,7 @@ Future<String> initAccessToken() async {
   }
   // If no token in storage
   final accessToken = await getAccessToken();
-  print("Got access token from server: $accessToken");
+  // print("Got access token from server: $accessToken");
   try {
     await saveAccessToken(accessToken, storage);
     print('Bearer token saved: $accessToken');
